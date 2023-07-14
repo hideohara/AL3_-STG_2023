@@ -2,19 +2,41 @@
 #include "TextureManager.h"
 #include <cassert>
 
-GameScene::GameScene() {}
+// コンストラクタ
+GameScene::GameScene() {
+	// 各クラスの削除
+	delete stage_; // ステージ
+}
 
+// デストラクタ
 GameScene::~GameScene() {}
 
+// 初期化
 void GameScene::Initialize() {
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
+
+	// ビュープロジェクションの初期化
+	viewProjection_.translation_.y = 1;
+	viewProjection_.translation_.z = -6;
+	viewProjection_.Initialize();
+
+	// 各クラスの生成
+	stage_ = new Stage(); // ステージ
+
+	// 各クラスの初期化
+	stage_->Initialize(viewProjection_); // ステージ
 }
 
-void GameScene::Update() {}
+// 更新
+void GameScene::Update() {
+	// 各クラスの更新
+	stage_->Update(); // ステージ
+}
 
+// 描画
 void GameScene::Draw() {
 
 	// コマンドリストの取得
@@ -27,6 +49,9 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
+
+	// 背景の描画
+	stage_->Draw2DFar();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -41,6 +66,9 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
+
+	// 背景の描画
+	stage_->Draw3D();
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

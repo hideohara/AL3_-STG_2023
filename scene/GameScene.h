@@ -6,6 +6,7 @@
 #include "Model.h"
 #include "SafeDelete.h"
 #include "Sprite.h"
+#include "Stage.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 
@@ -48,4 +49,10 @@ private: // メンバ変数
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
+
+	// 各クラス
+	Stage* stage_ = nullptr; // ステージ
+
+	// ビュープロジェクション（共通）
+	ViewProjection viewProjection_;
 };
