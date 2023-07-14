@@ -3,13 +3,14 @@
 #include <cassert>
 
 // コンストラクタ
-GameScene::GameScene() {
-	// 各クラスの削除
-	delete stage_; // ステージ
-}
+GameScene::GameScene() {}
 
 // デストラクタ
-GameScene::~GameScene() {}
+GameScene::~GameScene() {
+	// 各クラスの削除
+	delete stage_;  // ステージ
+	delete player_; // プレイヤー
+}
 
 // 初期化
 void GameScene::Initialize() {
@@ -24,16 +25,19 @@ void GameScene::Initialize() {
 	viewProjection_.Initialize();
 
 	// 各クラスの生成
-	stage_ = new Stage(); // ステージ
+	stage_ = new Stage();   // ステージ
+	player_ = new Player(); // プレイヤー
 
 	// 各クラスの初期化
-	stage_->Initialize(viewProjection_); // ステージ
+	stage_->Initialize(viewProjection_);  // ステージ
+	player_->Initialize(viewProjection_); // プレイヤー
 }
 
 // 更新
 void GameScene::Update() {
 	// 各クラスの更新
-	stage_->Update(); // ステージ
+	stage_->Update();  // ステージ
+	player_->Update(); // プレイヤー
 }
 
 // 描画
@@ -67,8 +71,8 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 
-	// 背景の描画
-	stage_->Draw3D();
+	stage_->Draw3D();  // 背景の描画
+	player_->Draw3D(); // プレイヤーの描画
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

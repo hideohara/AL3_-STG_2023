@@ -4,6 +4,7 @@
 #include "DirectXCommon.h"
 #include "Input.h"
 #include "Model.h"
+#include "Player.h"
 #include "SafeDelete.h"
 #include "Sprite.h"
 #include "Stage.h"
@@ -51,7 +52,8 @@ private: // メンバ変数
 	/// </summary>
 
 	// 各クラス
-	Stage* stage_ = nullptr; // ステージ
+	Stage* stage_ = nullptr;   // ステージ
+	Player* player_ = nullptr; // プレイヤー
 
 	// ビュープロジェクション（共通）
 	ViewProjection viewProjection_;
