@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Audio.h"
+#include "Beam.h"
 #include "DirectXCommon.h"
 #include "Input.h"
 #include "Model.h"
@@ -54,6 +55,7 @@ private: // メンバ変数
 	// 各クラス
 	Stage* stage_ = nullptr;   // ステージ
 	Player* player_ = nullptr; // プレイヤー
+	Beam* beam_ = nullptr;     // ビーム
 
 	// ビュープロジェクション（共通）
 	ViewProjection viewProjection_;
