@@ -11,10 +11,13 @@ GameScene::~GameScene() {
 	delete stage_;  // ステージ
 	delete player_; // プレイヤー
 	delete beam_;   // ビーム
+	delete enemy_;  // 敵
 }
 
 // 初期化
 void GameScene::Initialize() {
+
+	srand((unsigned int)time(NULL));
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
@@ -29,11 +32,13 @@ void GameScene::Initialize() {
 	stage_ = new Stage();   // ステージ
 	player_ = new Player(); // プレイヤー
 	beam_ = new Beam();     // ビーム
+	enemy_ = new Enemy();   // 敵
 
 	// 各クラスの初期化
 	stage_->Initialize(viewProjection_);         // ステージ
 	player_->Initialize(viewProjection_);        // プレイヤー
 	beam_->Initialize(viewProjection_, player_); // ビーム
+	enemy_->Initialize(viewProjection_);         // 敵
 }
 
 // 更新
@@ -42,6 +47,7 @@ void GameScene::Update() {
 	stage_->Update();  // ステージ
 	player_->Update(); // プレイヤー
 	beam_->Update();   // ビーム
+	enemy_->Update();  // 敵
 }
 
 // 描画
@@ -78,6 +84,7 @@ void GameScene::Draw() {
 	stage_->Draw3D();  // 背景の描画
 	player_->Draw3D(); // プレイヤーの描画
 	beam_->Draw3D();   // ビームの描画
+	enemy_->Draw3D();  // 敵の描画
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
