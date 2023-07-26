@@ -39,6 +39,10 @@ void GameScene::Initialize() {
 	player_->Initialize(viewProjection_);        // プレイヤー
 	beam_->Initialize(viewProjection_, player_); // ビーム
 	enemy_->Initialize(viewProjection_);         // 敵
+
+	// デバッグテキスト
+	debugText_ = DebugText::GetInstance();
+	debugText_->Initialize();
 }
 
 // 更新
@@ -48,6 +52,8 @@ void GameScene::Update() {
 	player_->Update(); // プレイヤー
 	beam_->Update();   // ビーム
 	enemy_->Update();  // 敵
+
+	Collision(); // 衝突判定
 }
 
 // 描画
@@ -98,8 +104,66 @@ void GameScene::Draw() {
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
 
+	// ゲームスコア
+	char str[100];
+	sprintf_s(str, "SCORE %d", gameScore_);
+	debugText_->Print(str, 200, 10, 2);
+
+	sprintf_s(str, "LIFE %d", playerLife_);
+	debugText_->Print(str, 800, 10, 2);
+
+	debugText_->DrawAll();
+
 	// スプライト描画後処理
 	Sprite::PostDraw();
 
 #pragma endregion
+}
+
+// ************************************************
+
+// 衝突判定
+void GameScene::Collision() {
+	// 衝突判定（プレイヤーと敵）
+	CollisionPlayerEnemy();
+	// 衝突判定（ビームと敵）
+	CollisionBeamEnemy();
+}
+
+// 衝突判定（プレイヤーと敵）
+void GameScene::CollisionPlayerEnemy() {
+	// 敵が存在すれば
+	if (enemy_->GetFlag() == 1) {
+		// 差を求める
+		float dx = abs(player_->GetX() - enemy_->GetX());
+		float dz = abs(player_->GetZ() - enemy_->GetZ());
+		// 衝突したら
+		if (dx < 1 && dz < 1) {
+			// 衝突処理
+			enemy_->Hit();
+			// ライフ減算
+			playerLife_ -= 1;
+		}
+	}
+}
+
+// 衝突判定（ビームと敵）
+void GameScene::CollisionBeamEnemy() {
+	// ビームが存在すれば
+	if (beam_->GetFlag() == 1) {
+		// 敵が存在すれば
+		if (enemy_->GetFlag() == 1) {
+			// 差を求める
+			float dx = abs(beam_->GetX() - enemy_->GetX());
+			float dz = abs(beam_->GetZ() - enemy_->GetZ());
+			// 衝突したら
+			if (dx < 1 && dz < 1) {
+				// 衝突処理
+				enemy_->Hit();
+				beam_->Hit();
+				// 点数加算
+				gameScore_ += 1;
+			}
+		}
+	}
 }

@@ -30,6 +30,9 @@ public:
 	// X座標の獲得
 	float GetX() { return worldTransformPlayer_.translation_.x; }
 
+	// Z座標の獲得
+	float GetZ() { return worldTransformPlayer_.translation_.z; }
+
 private:
 	// ビュープロジェクション（共通）
 	ViewProjection viewProjection_;
