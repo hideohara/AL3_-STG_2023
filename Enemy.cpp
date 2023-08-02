@@ -76,3 +76,9 @@ void Enemy::Born() {
 		aliveFlag_ = 1;
 	}
 }
+
+// 開始
+void Enemy::Start() {
+	// 存在しない
+	aliveFlag_ = 0;
+}

@@ -46,6 +46,9 @@ public:
 	// 衝突処理
 	void Hit() { aliveFlag_ = 0; }
 
+	// 開始
+	void Start();
+
 private:
 	// ビュープロジェクション（共通）
 	ViewProjection viewProjection_;

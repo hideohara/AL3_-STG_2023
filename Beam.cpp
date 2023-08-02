@@ -80,3 +80,9 @@ void Beam::Born() {
 		}
 	}
 }
+
+// 開始
+void Beam::Start() {
+	// 存在しない
+	aliveFlag_ = 0;
+}

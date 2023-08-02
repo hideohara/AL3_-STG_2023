@@ -35,7 +35,7 @@ void GamePlay::Initialize(ViewProjection viewProjection) {
 }
 
 // 更新
-void GamePlay::Update() {
+int GamePlay::Update() {
 	// 各クラスの更新
 	stage_->Update();  // ステージ
 	player_->Update(); // プレイヤー
@@ -43,6 +43,15 @@ void GamePlay::Update() {
 	enemy_->Update();  // 敵
 
 	Collision(); // 衝突判定
+
+	// HP
+	if (playerLife_ <= 0) {
+		// ゲームオーバーへ移行
+		return 2;
+	}
+
+	// ゲームプレイを継続
+	return 0;
 }
 
 // 3D描画
@@ -113,4 +122,13 @@ void GamePlay::CollisionBeamEnemy() {
 			}
 		}
 	}
+}
+
+// 開始
+void GamePlay::Start() {
+	playerLife_ = 3;
+	gameScore_ = 0;
+	player_->Start();
+	beam_->Start();
+	enemy_->Start();
 }

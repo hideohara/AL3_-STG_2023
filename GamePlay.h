@@ -28,7 +28,7 @@ public:
 	void Initialize(ViewProjection viewProjection);
 
 	// 更新
-	void Update();
+	int Update();
 
 	// 3D描画
 	void Draw3D();
@@ -47,6 +47,9 @@ public:
 
 	// 衝突判定（ビームと敵）
 	void CollisionBeamEnemy();
+
+	// 開始
+	void Start();
 
 private:
 	// ビュープロジェクション（共通）

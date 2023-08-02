@@ -33,6 +33,9 @@ public:
 	// Z座標の獲得
 	float GetZ() { return worldTransformPlayer_.translation_.z; }
 
+	// 開始
+	void Start();
+
 private:
 	// ビュープロジェクション（共通）
 	ViewProjection viewProjection_;

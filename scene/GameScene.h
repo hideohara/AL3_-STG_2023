@@ -1,15 +1,14 @@
 ﻿#pragma once
 
 #include "Audio.h"
-
 #include "DirectXCommon.h"
+#include "GameOver.h"
 #include "GamePlay.h"
 #include "Input.h"
 #include "Model.h"
-
 #include "SafeDelete.h"
 #include "Sprite.h"
-
+#include "Title.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 
@@ -55,9 +54,11 @@ private: // メンバ変数
 
 	// 各シーン
 	GamePlay* gamePlay_ = nullptr; // ゲームプレイ
+	Title* title_ = nullptr;       // タイトル
+	GameOver* gameOver_ = nullptr; // ゲームオーバー
 
 	// ビュープロジェクション（共通）
 	ViewProjection viewProjection_;
 
-	int sceneMode_ = 0; // シーンモード（0:ゲームプレイ　1:タイトル）
+	int sceneMode_ = 1; // シーンモード（0:ゲームプレイ　1:タイトル）
 };

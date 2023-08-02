@@ -61,3 +61,10 @@ void Player::Draw3D() {
 	// プレイヤー
 	modelPlayer_->Draw(worldTransformPlayer_, viewProjection_, textureHandlePlayer_);
 }
+
+// 開始
+void Player::Start() {
+	// 中央へ移動
+	worldTransformPlayer_.translation_.x = 0;
+	Update();
+}

@@ -9,7 +9,9 @@ GameScene::GameScene() {}
 GameScene::~GameScene() {
 
 	// 各シーンの削除
-	delete gamePlay_; // 敵
+	delete gamePlay_; // ゲームプレイ
+	delete title_;    // タイトル
+	delete gameOver_; // ゲームオーバー
 }
 
 // 初期化
@@ -28,18 +30,40 @@ void GameScene::Initialize() {
 
 	// 各シーンの生成
 	gamePlay_ = new GamePlay();
+	title_ = new Title();
+	gameOver_ = new GameOver();
 
 	// 各シーンの初期化
 	gamePlay_->Initialize(viewProjection_); //	ゲ－ムプレイ
+	title_->Initialize();                   //	タイトル
+	gameOver_->Initialize();                //	ゲ－ムオーバー
 }
 
 // 更新
 void GameScene::Update() {
+	// 現在のモードを記録
+	int oldSceneMode = sceneMode_;
+
 	// 各シーン更新
 	switch (sceneMode_) {
 	case 0:
-		gamePlay_->Update(); // ゲームプレイ
+		sceneMode_ = gamePlay_->Update(); // ゲームプレイ
 		break;
+	case 1:
+		sceneMode_ = title_->Update(); // タイトル
+		break;
+	case 2:
+		sceneMode_ = gameOver_->Update(); // ゲームオーバー
+		break;
+	}
+
+	// シーン変更ならば
+	if (oldSceneMode != sceneMode_) {
+		switch (sceneMode_) {
+		case 0:
+			gamePlay_->Start(); // ゲームプレイ
+			break;
+		}
 	}
 }
 
@@ -63,6 +87,9 @@ void GameScene::Draw() {
 	case 0:
 		gamePlay_->Draw2DFar(); // ゲームプレイ
 		break;
+	case 2:
+		gamePlay_->Draw2DFar(); // ゲームプレイ
+		break;
 	}
 
 	// スプライト描画後処理
@@ -82,7 +109,10 @@ void GameScene::Draw() {
 	// 各シーン３D描画
 	switch (sceneMode_) {
 	case 0:
-		gamePlay_->Draw3D();
+		gamePlay_->Draw3D(); // ゲームプレイ
+		break;
+	case 2:
+		gamePlay_->Draw3D(); // ゲームプレイ
 		break;
 	}
 
@@ -101,7 +131,15 @@ void GameScene::Draw() {
 	// 各シーン2D前景描画
 	switch (sceneMode_) {
 	case 0:
-		gamePlay_->Draw2DNear();
+		gamePlay_->Draw2DNear(); // ゲームプレイ
+		break;
+	case 1:
+		title_->Draw2DNear(); // タイトル
+		break;
+	case 2:
+		gamePlay_->Draw2DNear(); // ゲームプレイ
+		gameOver_->Draw2DNear(); // ゲームオーバー
+		break;
 	}
 
 	// スプライト描画後処理
