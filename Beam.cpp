@@ -31,7 +31,7 @@ void Beam::Update() {
 	Move();
 
 	// 発生（発射）
-	Born();
+	// Born();
 
 	// 変換行列を更新
 	worldTransformBeam_.matWorld_ = MakeAffineMatrix(

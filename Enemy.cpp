@@ -39,9 +39,9 @@ void Enemy::Update() {
 
 // 3D描画
 void Enemy::Draw3D() {
-	// if (aliveFlag_ == 1) {
-	modelEnemy_->Draw(worldTransformEnemy_, viewProjection_, textureHandleEnemy_);
-	// }
+	if (aliveFlag_ == 1) {
+		modelEnemy_->Draw(worldTransformEnemy_, viewProjection_, textureHandleEnemy_);
+	}
 }
 
 // 移動
@@ -52,6 +52,14 @@ void Enemy::Move() {
 		worldTransformEnemy_.translation_.z -= 0.2f;
 		// 回転
 		worldTransformEnemy_.rotation_.x -= 0.1f;
+		// 横移動
+		worldTransformEnemy_.translation_.x += xSpeed_;
+		if (worldTransformEnemy_.translation_.x > 4) {
+			xSpeed_ = -0.1f;
+		}
+		if (worldTransformEnemy_.translation_.x < -4) {
+			xSpeed_ = 0.1f;
+		}
 
 		// 画面端まで移動したら
 		if (worldTransformEnemy_.translation_.z < -5) {
@@ -63,17 +71,26 @@ void Enemy::Move() {
 
 // 発生
 void Enemy::Born() {
+	// 乱数で発生
+	if (rand() % 10 == 0) {
 
-	// 存在フラグが０ならば
-	if (aliveFlag_ == 0) {
-		// 乱数でＸ座標の指定
-		int x = rand() % 80; // 80は4の10倍の2倍
-		float x2 = (float)x / 10 - 4;
-		// 10で割り、4を引く
-		worldTransformEnemy_.translation_.x = x2;
-		worldTransformEnemy_.translation_.z = 40;
-		// 存在フラグを１にする。
-		aliveFlag_ = 1;
+		// 存在フラグが０ならば
+		if (aliveFlag_ == 0) {
+			// 乱数でＸ座標の指定
+			int x = rand() % 80; // 80は4の10倍の2倍
+			float x2 = (float)x / 10 - 4;
+			// 10で割り、4を引く
+			worldTransformEnemy_.translation_.x = x2;
+			worldTransformEnemy_.translation_.z = 40;
+			// 存在フラグを１にする。
+			aliveFlag_ = 1;
+			// 敵スピード
+			if (rand() % 2 == 0) {
+				xSpeed_ = 0.1f;
+			} else {
+				xSpeed_ = -0.1f;
+			}
+		}
 	}
 }
 

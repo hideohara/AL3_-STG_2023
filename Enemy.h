@@ -60,4 +60,7 @@ private:
 
 	// 存在フラグ
 	int aliveFlag_ = 0;
+
+	// 横方向スピード
+	float xSpeed_ = 0;
 };

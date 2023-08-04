@@ -58,6 +58,7 @@ void Player::Update() {
 
 // 3D描画
 void Player::Draw3D() {
+
 	// プレイヤー
 	modelPlayer_->Draw(worldTransformPlayer_, viewProjection_, textureHandlePlayer_);
 }
@@ -66,5 +67,5 @@ void Player::Draw3D() {
 void Player::Start() {
 	// 中央へ移動
 	worldTransformPlayer_.translation_.x = 0;
-	Update();
+	// Update();
 }

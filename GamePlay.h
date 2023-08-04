@@ -51,19 +51,28 @@ public:
 	// 開始
 	void Start();
 
+	// 射撃
+	void Shot();
+
 private:
 	// ビュープロジェクション（共通）
 	ViewProjection viewProjection_;
 
 	// 各クラス
-	Stage* stage_ = nullptr;   // ステージ
-	Player* player_ = nullptr; // プレイヤー
-	Beam* beam_ = nullptr;     // ビーム
-	Enemy* enemy_ = nullptr;   // 敵
+	Stage* stage_ = nullptr;     // ステージ
+	Player* player_ = nullptr;   // プレイヤー
+	Beam* beamTable_[10] = {};   // ビーム
+	Enemy* enemyTable_[10] = {}; // 敵
 
 	// デバッグテキスト
 	DebugText* debugText_ = nullptr;
 
 	int gameScore_ = 0;  // ゲームスコア
 	int playerLife_ = 3; // プレイヤーライフ
+
+	// インプットクラス
+	Input* input_ = nullptr;
+
+	// 射撃タイマー
+	int shotTimer_;
 };

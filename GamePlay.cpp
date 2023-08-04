@@ -8,8 +8,12 @@ GamePlay::~GamePlay() {
 	// 各クラスの削除
 	delete stage_;  // ステージ
 	delete player_; // プレイヤー
-	delete beam_;   // ビーム
-	delete enemy_;  // 敵
+	for (Beam* beam : beamTable_) {
+		delete beam; // ビーム
+	}
+	for (Enemy* enemy : enemyTable_) {
+		delete enemy; // 敵
+	}
 }
 
 // 初期化
@@ -20,18 +24,27 @@ void GamePlay::Initialize(ViewProjection viewProjection) {
 	// 各クラスの生成
 	stage_ = new Stage();   // ステージ
 	player_ = new Player(); // プレイヤー
-	beam_ = new Beam();     // ビーム
-	enemy_ = new Enemy();   // 敵
-
+	for (int i = 0; i < 10; i++) {
+		beamTable_[i] = new Beam(); // ビーム
+	}
+	for (int i = 0; i < 10; i++) {
+		enemyTable_[i] = new Enemy(); // 敵
+	}
 	// 各クラスの初期化
-	stage_->Initialize(viewProjection_);         // ステージ
-	player_->Initialize(viewProjection_);        // プレイヤー
-	beam_->Initialize(viewProjection_, player_); // ビーム
-	enemy_->Initialize(viewProjection_);         // 敵
-
+	stage_->Initialize(viewProjection_);  // ステージ
+	player_->Initialize(viewProjection_); // プレイヤー
+	for (Beam* beam : beamTable_) {
+		beam->Initialize(viewProjection_, player_); // ビーム
+	}
+	for (Enemy* enemy : enemyTable_) {
+		enemy->Initialize(viewProjection_); // 敵
+	}
 	// デバッグテキスト
 	debugText_ = DebugText::GetInstance();
 	debugText_->Initialize();
+
+	// インプットクラス
+	input_ = Input::GetInstance();
 }
 
 // 更新
@@ -39,8 +52,14 @@ int GamePlay::Update() {
 	// 各クラスの更新
 	stage_->Update();  // ステージ
 	player_->Update(); // プレイヤー
-	beam_->Update();   // ビーム
-	enemy_->Update();  // 敵
+	for (Beam* beam : beamTable_) {
+		beam->Update(); // ビーム
+	}
+	for (Enemy* enemy : enemyTable_) {
+		enemy->Update(); // 敵
+	}
+	// 射撃
+	Shot();
 
 	Collision(); // 衝突判定
 
@@ -58,8 +77,12 @@ int GamePlay::Update() {
 void GamePlay::Draw3D() {
 	stage_->Draw3D();  // 背景の描画
 	player_->Draw3D(); // プレイヤーの描画
-	beam_->Draw3D();   // ビームの描画
-	enemy_->Draw3D();  // 敵の描画
+	for (Beam* beam : beamTable_) {
+		beam->Draw3D(); // ビームの描画
+	}
+	for (Enemy* enemy : enemyTable_) {
+		enemy->Draw3D(); // 敵の描画
+	}
 }
 
 // 2D遠景描画
@@ -88,37 +111,43 @@ void GamePlay::Collision() {
 
 // 衝突判定（プレイヤーと敵）
 void GamePlay::CollisionPlayerEnemy() {
-	// 敵が存在すれば
-	if (enemy_->GetFlag() == 1) {
-		// 差を求める
-		float dx = abs(player_->GetX() - enemy_->GetX());
-		float dz = abs(player_->GetZ() - enemy_->GetZ());
-		// 衝突したら
-		if (dx < 1 && dz < 1) {
-			// 衝突処理
-			enemy_->Hit();
-			// ライフ減算
-			playerLife_ -= 1;
+	for (Enemy* enemy : enemyTable_) {
+		// 敵が存在すれば
+		if (enemy->GetFlag() == 1) {
+			// 差を求める
+			float dx = abs(player_->GetX() - enemy->GetX());
+			float dz = abs(player_->GetZ() - enemy->GetZ());
+			// 衝突したら
+			if (dx < 1 && dz < 1) {
+				// 衝突処理
+				enemy->Hit();
+				// ライフ減算
+				playerLife_ -= 1;
+			}
 		}
 	}
 }
 
 // 衝突判定（ビームと敵）
 void GamePlay::CollisionBeamEnemy() {
-	// ビームが存在すれば
-	if (beam_->GetFlag() == 1) {
-		// 敵が存在すれば
-		if (enemy_->GetFlag() == 1) {
-			// 差を求める
-			float dx = abs(beam_->GetX() - enemy_->GetX());
-			float dz = abs(beam_->GetZ() - enemy_->GetZ());
-			// 衝突したら
-			if (dx < 1 && dz < 1) {
-				// 衝突処理
-				enemy_->Hit();
-				beam_->Hit();
-				// 点数加算
-				gameScore_ += 1;
+	for (Beam* beam : beamTable_) {
+		// ビームが存在すれば
+		if (beam->GetFlag() == 1) {
+			for (Enemy* enemy : enemyTable_) {
+				// 敵が存在すれば
+				if (enemy->GetFlag() == 1) {
+					// 差を求める
+					float dx = abs(beam->GetX() - enemy->GetX());
+					float dz = abs(beam->GetZ() - enemy->GetZ());
+					// 衝突したら
+					if (dx < 1 && dz < 1) {
+						// 衝突処理
+						enemy->Hit();
+						beam->Hit();
+						// 点数加算
+						gameScore_ += 1;
+					}
+				}
 			}
 		}
 	}
@@ -129,6 +158,46 @@ void GamePlay::Start() {
 	playerLife_ = 3;
 	gameScore_ = 0;
 	player_->Start();
-	beam_->Start();
-	enemy_->Start();
+	for (Beam* beam : beamTable_) {
+		beam->Start();
+	}
+	for (Enemy* enemy : enemyTable_) {
+		enemy->Start();
+	}
+	Update();
+}
+
+// 射撃
+void GamePlay::Shot() {
+	// 射撃タイマーが0ならば
+	if (shotTimer_ == 0) {
+
+		// スペースキーを押したら
+		if (input_->PushKey(DIK_SPACE)) {
+			// ビームでループ
+			for (Beam* beam : beamTable_) {
+				// 存在しなければ
+				if (beam->GetFlag() == 0) {
+					// 発射（発生）
+					beam->Born();
+					beam->Update();
+					// 射撃タイマー
+					shotTimer_ = 1;
+
+					break;
+				}
+			}
+		}
+	}
+	// 発射できない状態
+	else {
+		// タイマー加算
+		shotTimer_++;
+
+		// 一定時間で
+		if (shotTimer_ > 10) {
+			// 発射できる状態
+			shotTimer_ = 0;
+		}
+	}
 }
